@@ -3,10 +3,17 @@ import advancedPaths from "./advanced-paths"
 import animated from "./animated"
 import samples from "./api-samples"
 import highlights from "./highlights"
+import minuteCubes from "./minute-cubes"
 import isometric from "./isometric"
 import randomness from "./randomness"
 
 export default {
+  "Minute Cubes": {
+    sketches: minuteCubes,
+    fileName: "minute-cubes.ts",
+    path: "/minute-cubes",
+    description: `Minute Cubes: album cover sketches.`,
+  },
   Highlights: {
     sketches: highlights,
     fileName: "highlights.ts",
