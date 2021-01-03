@@ -51,15 +51,24 @@ const starterRect = (p: SCanvas) => {
 }
 
 const myArcs = (p: SCanvas) => {
-  p.background(0, 0, 50)
+  const bgLightness = p.uniformRandomInt({from: 15, to: 85})
+  const repeats = p.uniformRandomInt({from: 80, to: 120})
+  const spotHue1 = p.random() * 360
+  //const spotHue2 = p.random() * 360
+  const spotHue2 = (spotHue1 + p.sample([20, 120, 180, 240])) % 360
+  const spotColourChance = p.random() * 0.5
+
+  p.background(spotHue1, 30 * p.random(), bgLightness)
 
   // Wide arcs:
-  p.times(50, () => {
+  p.times(100, () => {
     const a1 = p.random() * Math.PI * 2
-    const a2 = a1 + p.gaussian({ mean: 0.5, sd: 0.2 })
+    const a2 = a1 + p.gaussian({ mean: 0.4, sd: 0.5 })
     const a_mid = (a1 + a2) / 2
-    const r1 = p.sample([0.25, 0.3, 0.35, 0.4])
-    const r2 = r1 - 0.15 * p.random()
+    const r1 = p.sample(
+      [0.2, 0.25, 0.3, 0.35, 0.4, 0.45].map(n => n - 0.05 + p.random() * 0.1)
+    )
+    const r2 = Math.max(r1 - 0.5 * (0.5 - r1) * p.random(), 0)
 
     //  Calculate points for gradient: inner and outer arc edge centres:
     //const gradPoint1 = [0.5, 0.5]       //  Centre
@@ -73,29 +82,32 @@ const myArcs = (p: SCanvas) => {
     ]
 
     //p.setFillColor(p.sample([20, 30, 35, 200]), 90, 60, 0.3)
-    p.setFillColor(0, 100, 30)
+    //p.setFillColor(0, 100, 30)
     //p.fill(new Circle({at: gradPoint1, r: 0.01}))   //  TODO: get round the types?
 
-    p.setFillColor(180, 100, 30)
+    //p.setFillColor(180, 100, 30)
     //p.fill(new Circle({at: gradPoint2, r: 0.01}))
 
     // Slightly randomise lightness for the gradient:
-    const lightness0 = p.random() * 60 + 20
-    const lightness1 = lightness0 + 20
+    const lightness0 = p.uniformRandomInt({from: 10, to: 60})
+    const lightness1 = lightness0 + 40
 
-    const hue = p.sample([0, 20, 330])
-    const saturation = (p.random() < 0.2 ? 60 : 0)
+    const hue = p.sample([spotHue1, spotHue2])
+    const spotting = (p.random() < spotColourChance)
+    const saturation1 = (spotting ? 50 : 0)
+    const saturation2 = (spotting ? 100 : 0)
 
     p.setFillGradient(
       new LinearGradient({
         from: gradPoint1,
         to: gradPoint2,
         colors: [
-          [0, { h: hue, s: saturation, l: lightness0, a: 0.5 }],
-          [1, { h: hue, s: saturation + 20, l: lightness1, a: 0.5 }]
+          [0, { h: hue, s: saturation1, l: lightness0, a: 0.4 + p.random() * 0.2}],
+          [1, { h: hue, s: saturation2, l: lightness1, a: 0.7 + p.random() * 0.3}]
         ]
       })
     )
+
     p.fill(
       new HollowArc({
         at: p.meta.center,
@@ -105,7 +117,21 @@ const myArcs = (p: SCanvas) => {
         r2
       })
     )
+
+    if (false) {
+      p.setFillColor(hue, saturation - 20, lightness0 - 3, 0.5)
+      p.fill(
+        new HollowArc({
+          at: p.meta.center,
+          a: a1,
+          a2: a2,
+          r: r1,
+          r2: r1 + 0.002
+        })
+      )
+    }
   })
+
 }
 
 const sketches: { name: string; sketch: (p: SCanvas) => void }[] = [
