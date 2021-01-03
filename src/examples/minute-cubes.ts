@@ -118,8 +118,8 @@ const myArcs = (p: SCanvas) => {
       })
     )
 
-    if (false) {
-      p.setFillColor(hue, saturation - 20, lightness0 - 3, 0.5)
+    if (true) {
+      p.setFillColor(hue, saturation1 - 20, lightness0 - 3, 0.5)
       p.fill(
         new HollowArc({
           at: p.meta.center,
